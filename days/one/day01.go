@@ -1,4 +1,4 @@
-package days
+package one
 
 import (
 	"AoC2024/util"
@@ -15,11 +15,11 @@ func Day01() {
 		log.Fatal(err)
 	}
 
-	task1(lines)
-	task2(lines)
+	day01_task1(lines)
+	day01_task2(lines)
 }
 
-func task1(lines []string) {
+func day01_task1(lines []string) {
 	leftSide := make([]int, len(lines))
 	rightSide := make([]int, len(lines))
 	for i := range lines {
@@ -38,7 +38,7 @@ func task1(lines []string) {
 	println(total)
 }
 
-func task2(lines []string) {
+func day01_task2(lines []string) {
 
 	leftMap := make(map[int]int)
 	rightMap := make(map[int]int)

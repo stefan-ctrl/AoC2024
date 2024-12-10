@@ -1,8 +1,10 @@
 package main
 
-import "AoC2024/days"
+import (
+	"AoC2024/days/two"
+)
 
 func main() {
-	//Day01()
-	days.Day02()
+	//one.Day01()
+	two.Day02()
 }

@@ -1,4 +1,4 @@
-package days
+package two
 
 import (
 	"reflect"
@@ -78,8 +78,54 @@ func Test_isReportSafe(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.args.line, func(t *testing.T) {
-			if got := isReportSafe(tt.args.line); got != tt.want {
+			intLine := castIntReport(tt.args.line)
+			intLineReversed := reverseIntSlice(intLine)
+			if got := isReportSafe(intLine, intLineReversed); got != tt.want {
 				t.Errorf("isReportSafe() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_introduceDampener(t *testing.T) {
+	type args struct {
+		intLine []int
+		index   int
+	}
+	tests := []struct {
+		name string
+		args args
+		want []int
+	}{
+		{
+			name: "First Element",
+			args: args{
+				intLine: []int{1, 2, 3, 4, 5, 6},
+				index:   0,
+			},
+			want: []int{2, 3, 4, 5, 6},
+		},
+		{
+			name: "Middle Element",
+			args: args{
+				intLine: []int{1, 2, 3, 4, 5, 6},
+				index:   2,
+			},
+			want: []int{1, 2, 4, 5, 6},
+		},
+		{
+			name: "Last Element",
+			args: args{
+				intLine: []int{1, 2, 3, 4, 5, 6},
+				index:   5,
+			},
+			want: []int{1, 2, 3, 4, 5},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := introduceDampener(tt.args.intLine, tt.args.index); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("introduceDampener() = %v, want %v", got, tt.want)
 			}
 		})
 	}
