@@ -2,6 +2,7 @@ package util
 
 import (
 	"bufio"
+	"io"
 	"os"
 	"path/filepath"
 )
@@ -34,4 +35,19 @@ func ReadFilePerLine(file string) ([]string, error) {
 	}
 
 	return lines, readFile.Close()
+}
+
+func ReadFile(file string) (string, error) {
+	filePath, _ := filepath.Abs(file)
+	readFile, err := os.Open(filePath)
+	if err != nil {
+		return "", err
+	}
+
+	result, err := io.ReadAll(readFile)
+	if err != nil {
+		return "", err
+	}
+
+	return string(result), readFile.Close()
 }

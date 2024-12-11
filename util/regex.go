@@ -5,7 +5,20 @@ import (
 	"regexp"
 )
 
-func RegexMatch(input string, regex string, captureGroup int) (string, error) {
+func RegexAllMatch(input string, regex string) ([][]string, error) {
+	reg, err := regexp.Compile(regex)
+	if err != nil {
+		return nil, err
+	}
+
+	matches := reg.FindAllStringSubmatch(input, -1)
+	if len(matches) == 0 {
+		return nil, fmt.Errorf("no match for regex: %s in %s", regex, input)
+	}
+	return matches, nil
+}
+
+func RegexFirstMatchFirstGroup(input string, regex string, captureGroup int) (string, error) {
 	reg, err := regexp.Compile(regex)
 	if err != nil {
 		return "", err
