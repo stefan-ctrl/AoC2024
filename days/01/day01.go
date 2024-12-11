@@ -1,4 +1,4 @@
-package one
+package main
 
 import (
 	"AoC2024/util"
@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-func Day01() {
+func main() {
 	lines, err := util.ReadFilePerLine("./input/day01.txt")
 	if err != nil {
 		log.Fatal(err)
