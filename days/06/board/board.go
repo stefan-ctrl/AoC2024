@@ -2,9 +2,7 @@ package board
 
 import (
 	"fmt"
-	"io"
 	"log"
-	"os"
 	"slices"
 	"strings"
 )
@@ -76,11 +74,22 @@ func (b *Board) MoveGuard(obstacleCheckList ...string) {
 	oldY := b.guardY
 
 	for b.isGuardFacingObstacle(obstacleCheckList...) {
+		b.registerMovement()
 		b.turnGuard()
 	}
+
+	b.registerMovement()
 	b.stepGuardForward()
+
 	if oldX != b.guardX || oldY != b.guardY {
 		b.PlaceMarker(oldX, oldY, GuardVisited)
+	}
+}
+
+func (b *Board) registerMovement() {
+	str := b.generateCurrentPositionIdentifier()
+	if b.trace != nil {
+		b.trace[str] = true
 	}
 }
 
@@ -136,17 +145,6 @@ func (b *Board) Print() {
 	}
 }
 
-func (b *Board) PrintToFile(file string) {
-	f, _ := os.Create(file)
-	mw := io.MultiWriter(os.Stdout, f)
-	for y := range b.matrix {
-		for x := range b.matrix[y] {
-			fmt.Fprint(mw, b.matrix[y][x])
-		}
-		fmt.Fprintln(mw)
-	}
-}
-
 func (b *Board) indexStartingPosition() {
 	found := false
 	for y := range b.matrix {
@@ -171,18 +169,6 @@ func (b *Board) indexStartingPosition() {
 func (b *Board) stepGuardForward() {
 	b.matrix[b.guardY][b.guardX] = FREE
 
-	c := CoordinatesWithDirection{
-		Coordinates: Coordinates{
-			X: b.guardX,
-			Y: b.guardY,
-		},
-		direction: b.guardDirection,
-	}
-	str := fmt.Sprintf("%v", c)
-	if b.trace != nil {
-		b.trace[str] = true
-	}
-
 	switch b.guardDirection {
 	case GuardNorth:
 		b.guardY -= 1
@@ -202,11 +188,7 @@ func (b *Board) stepGuardForward() {
 	}
 }
 
-func (b *Board) IsFree(x int, y int) bool {
-	return b.matrix[y][x] == FREE
-}
-
-func (b *Board) IsGuardInLoop() bool {
+func (b *Board) generateCurrentPositionIdentifier() string {
 	c := CoordinatesWithDirection{
 		Coordinates: Coordinates{
 			X: b.guardX,
@@ -215,6 +197,15 @@ func (b *Board) IsGuardInLoop() bool {
 		direction: b.guardDirection,
 	}
 	str := fmt.Sprintf("%v", c)
+	return str
+}
+
+func (b *Board) IsFree(x int, y int) bool {
+	return b.matrix[y][x] == FREE
+}
+
+func (b *Board) IsGuardInLoop() bool {
+	str := b.generateCurrentPositionIdentifier()
 	_, ok := b.trace[str]
 	return ok
 }
