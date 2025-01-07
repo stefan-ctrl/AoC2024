@@ -74,11 +74,11 @@ func (b *Board) MoveGuard(obstacleCheckList ...string) {
 	oldY := b.guardY
 
 	for b.isGuardFacingObstacle(obstacleCheckList...) {
-		b.registerMovement()
+		b.registerPosition()
 		b.turnGuard()
 	}
 
-	b.registerMovement()
+	b.registerPosition()
 	b.stepGuardForward()
 
 	if oldX != b.guardX || oldY != b.guardY {
@@ -86,7 +86,7 @@ func (b *Board) MoveGuard(obstacleCheckList ...string) {
 	}
 }
 
-func (b *Board) registerMovement() {
+func (b *Board) registerPosition() {
 	str := b.generateCurrentPositionIdentifier()
 	if b.trace != nil {
 		b.trace[str] = true
