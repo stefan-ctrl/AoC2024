@@ -21,18 +21,6 @@ type CalibratorEquations struct {
 	operators  []int
 }
 
-func intToNewBaseFixedLength(number, base, length int) string {
-	if length == 0 {
-		return "0"
-	}
-
-	otherBasis := strconv.FormatInt(int64(number), base)
-	for len(otherBasis) < length {
-		otherBasis = "0" + otherBasis
-	}
-	return otherBasis
-}
-
 func newCalibratorEquations(str string) *CalibratorEquations {
 	str = strings.Replace(str, ":", "", -1)
 	split := strings.Split(str, " ")
@@ -55,7 +43,7 @@ func (c *CalibratorEquations) IsCheckValueReachable(mathOperatorList []string) b
 	pow := len(c.operators) - 1
 	validVariations := int(math.Pow(float64(base), float64(pow)))
 	for i := 0; i < validVariations; i++ {
-		mutationSeed := intToNewBaseFixedLength(i, base, pow)
+		mutationSeed := util.IntToNewBaseFixedLength(i, base, pow)
 		mutatedMathOperators := toMathOperators(mutationSeed)
 		if c.checkValue == c.solve(mutatedMathOperators) {
 			return true
