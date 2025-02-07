@@ -44,7 +44,8 @@ func task01(lines []string) int {
 	for _, v := range *position {
 		for i := 0; i < len(v); i++ {
 			for j := i + 1; j < len(v); j++ {
-				placeAntenna(&matrix, v[i], v[j])
+				distanceColumn, distanceRow := calculateDistance(v[i], v[j])
+				placeAntenna(&matrix, v[i], v[j], distanceColumn, distanceRow)
 			}
 		}
 	}
@@ -52,18 +53,17 @@ func task01(lines []string) int {
 	return countAntenna(&matrix)
 }
 
-func placeAntenna(m *util.Matrix[string], coordinate util.Coordinate, coordinate2 util.Coordinate) (util.Coordinate, util.Coordinate) {
-	distanceColumn, distanceRow := calculateDistance(coordinate, coordinate2)
+func placeAntenna(m *util.Matrix[string], coordinate util.Coordinate, coordinate2 util.Coordinate, distanceColumn column, distanceRow row) (util.Coordinate, util.Coordinate) {
 	antenna1Coordinate := util.Coordinate{Row: coordinate.Row - int(distanceRow), Col: coordinate.Col - int(distanceColumn)}
 	antenna2Coordinate := util.Coordinate{Row: coordinate2.Row + int(distanceRow), Col: coordinate2.Col + int(distanceColumn)}
 
-	if !m.IsCoordinateOutOfRange(&antenna1Coordinate) {
+	if !m.IsCoordinateOutOfRange(&antenna1Coordinate) && !m.IsCoordinateOutOfRange(&coordinate) {
 		m.SetElement(&antenna1Coordinate, Antenna)
 	} else {
 		antenna1Coordinate = util.Coordinate{Row: -1, Col: -1}
 	}
 
-	if !m.IsCoordinateOutOfRange(&antenna2Coordinate) {
+	if !m.IsCoordinateOutOfRange(&antenna2Coordinate) && !m.IsCoordinateOutOfRange(&coordinate2) {
 		m.SetElement(&antenna2Coordinate, Antenna)
 	} else {
 		antenna2Coordinate = util.Coordinate{Row: -1, Col: -1}
@@ -73,28 +73,27 @@ func placeAntenna(m *util.Matrix[string], coordinate util.Coordinate, coordinate
 
 func placeAntennaRepeatedly(m *util.Matrix[string], coordinate util.Coordinate, coordinate2 util.Coordinate) (util.Coordinate, util.Coordinate) {
 	distanceColumn, distanceRow := calculateDistance(coordinate, coordinate2)
-	antenna1Coordinate := util.Coordinate{Row: coordinate.Row - int(distanceRow), Col: coordinate.Col - int(distanceColumn)}
-	antenna2Coordinate := util.Coordinate{Row: coordinate2.Row + int(distanceRow), Col: coordinate2.Col + int(distanceColumn)}
-
-	if !m.IsCoordinateOutOfRange(&antenna1Coordinate) {
-		m.SetElement(&antenna1Coordinate, Antenna)
-	} else {
-		antenna1Coordinate = util.Coordinate{Row: -1, Col: -1}
+	for !m.IsCoordinateOutOfRange(&coordinate) || !m.IsCoordinateOutOfRange(&coordinate2) {
+		coordinate, coordinate2 = placeAntenna(m, coordinate, coordinate2, distanceColumn, distanceRow)
 	}
-
-	if !m.IsCoordinateOutOfRange(&antenna2Coordinate) {
-		m.SetElement(&antenna2Coordinate, Antenna)
-	} else {
-		antenna2Coordinate = util.Coordinate{Row: -1, Col: -1}
-	}
-
-	return antenna1Coordinate, antenna2Coordinate
+	return coordinate, coordinate2
 }
 
 func countAntenna(m *util.Matrix[string]) int {
 	count := 0
 	f := func(elem string, _, _ int) {
 		if elem == Antenna {
+			count++
+		}
+	}
+	m.ForEach(&f)
+	return count
+}
+
+func countRemainingSenders(m *util.Matrix[string], p *map[string][]util.Coordinate) int {
+	count := 0
+	f := func(elem string, _, _ int) {
+		if elem != Antenna && elem != EmptyField && len((*p)[elem]) > 1 {
 			count++
 		}
 	}
@@ -118,5 +117,5 @@ func task02(lines []string) int {
 		}
 	}
 
-	return countAntenna(&matrix)
+	return countAntenna(&matrix) + countRemainingSenders(&matrix, position)
 }

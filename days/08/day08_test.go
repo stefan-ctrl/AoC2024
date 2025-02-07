@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-var lines, err = util.ReadFilePerLine("../../input/day08_example.txt")
+var lines, _ = util.ReadFilePerLine("../../input/day08_example.txt")
 
 func Test_evaluatePositions(t *testing.T) {
 
@@ -153,7 +153,8 @@ func Test_placeAntenna(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			m := util.StringLinesToMatrix(lines)
-			got, got1 := placeAntenna(&m, tt.args.coordinate, tt.args.coordinate2)
+			distanceColumn, distanceRow := calculateDistance(tt.args.coordinate, tt.args.coordinate2)
+			got, got1 := placeAntenna(&m, tt.args.coordinate, tt.args.coordinate2, distanceColumn, distanceRow)
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("placeAntenna() got = %v, want %v", got, tt.want)
 			}
@@ -210,7 +211,7 @@ func Test_task02(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := task02(tt.args.lines); got != tt.want {
-				t.Errorf("task01() = %v, want %v", got, tt.want)
+				t.Errorf("task02() = %v, want %v", got, tt.want)
 			}
 		})
 	}
