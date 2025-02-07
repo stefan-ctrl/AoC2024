@@ -1,7 +1,10 @@
 package util
 
 import "C"
-import "strings"
+import (
+	"fmt"
+	"strings"
+)
 
 // Matrix top left corner as center of origin
 type Matrix[T any] [][]T
@@ -43,5 +46,14 @@ func (m *Matrix[T]) ForEach(action *func(T, int, int)) {
 		for row := range (*m)[col] {
 			(*action)((*m)[row][col], row, col)
 		}
+	}
+}
+
+func (m *Matrix[T]) Print() {
+	for col := range *m {
+		for row := range (*m)[col] {
+			fmt.Print((*m)[col][row])
+		}
+		fmt.Println()
 	}
 }
