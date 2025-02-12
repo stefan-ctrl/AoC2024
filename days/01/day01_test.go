@@ -15,7 +15,7 @@ func Test_receiveSides(t *testing.T) {
 		{
 			name: "simple",
 			args: args{
-				line: "12 21",
+				line: "12   21",
 			},
 			want:  12,
 			want1: 21,
