@@ -30,11 +30,11 @@ func task01(line string) int {
 func toFileBlocks(str string) []FileId {
 	fileBlocks := make([]FileId, 0)
 	reverse_index := len(str) - 1
-	encodedValue := 0
+	var encodedValue int
 	encodedInverseValue, _ := strconv.Atoi(string(str[reverse_index]))
 	for i := range str {
 		encodedValue, _ = strconv.Atoi(string(str[i]))
-		extendTo := 0
+		var extendTo int
 		if i == reverse_index {
 			extendTo = len(fileBlocks) + encodedInverseValue
 		} else {
@@ -65,7 +65,7 @@ func toFileBlocks(str string) []FileId {
 func checksum(blocks []FileId) int {
 	sum := 0
 	for i := range blocks {
-		sum += (i * int(blocks[i]))
+		sum += i * int(blocks[i])
 	}
 	return sum
 }
