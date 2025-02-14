@@ -9,8 +9,8 @@ import (
 
 type FileId int
 
-var writtenBlocks = make(map[int]bool)
-var movedBlocks = make(map[int]bool)
+var writtenBlocks map[int]bool
+var movedBlocks map[int]bool
 
 func main() {
 	lines, err := util.ReadFilePerLine("./input/day09.txt")
@@ -70,6 +70,8 @@ func toFileBlocks(str string) []FileId {
 }
 
 func toFileBlocksComplete(str string) []FileId {
+	writtenBlocks = make(map[int]bool)
+	movedBlocks = make(map[int]bool)
 	fileBlocks := make([]FileId, 0)
 	reverse_index := len(str) - 1
 	var blockSizeToWrite int
